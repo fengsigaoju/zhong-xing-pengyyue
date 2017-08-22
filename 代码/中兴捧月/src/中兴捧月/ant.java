@@ -1,26 +1,27 @@
-package 中兴捧月;
+package 脰脨脨脣脜玫脭脗;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Scanner;
 /*
- * 总体思路:先跑BFS，记录当前经过的节点信息，同时记录当前节点的权值,如果当前节点多余9个则直接返回
- * 当遍历到终点时，判断会不会经过必须到达的两个点和边，不能经过的边在读入的时候跳过
- * 记录下最优的路径值和路径路线
+ * 脳脺脤氓脣录脗路:脧脠脜脺BFS拢卢录脟脗录碌卤脟掳戮颅鹿媒碌脛陆脷碌茫脨脜脧垄拢卢脥卢脢卤录脟脗录碌卤脟掳陆脷碌茫碌脛脠篓脰碌,脠莽鹿没碌卤脟掳陆脷碌茫露脿脫脿9赂枚脭貌脰卤陆脫路碌禄脴
+ * 碌卤卤茅脌煤碌陆脰脮碌茫脢卤拢卢脜脨露脧禄谩虏禄禄谩戮颅鹿媒卤脴脨毛碌陆麓茂碌脛脕陆赂枚碌茫潞脥卤脽拢卢虏禄脛脺戮颅鹿媒碌脛卤脽脭脷露脕脠毛碌脛脢卤潞貌脤酶鹿媒
+ * 录脟脗录脧脗脳卯脫脜碌脛脗路戮露脰碌潞脥脗路戮露脗路脧脽
  */
-class point implements Cloneable{//继承克隆接口
-	 int  index;//之前的路径上的最后一个点的下标
+class point implements Cloneable{//录脤鲁脨驴脣脗隆陆脫驴脷
+	 //娉ㄩ噴
+	 int  index;//脰庐脟掳碌脛脗路戮露脡脧碌脛脳卯潞贸脪禄赂枚碌茫碌脛脧脗卤锚
 	 ArrayList<Integer>arraylist;
-	 int value;//经过顶点的权值
-	 int length;//经过节点的个数
-	  public Object clone(){//重写clone方法，实现深拷贝，这里主要是指arraylist的浅拷贝问题
+	 int value;//戮颅鹿媒露楼碌茫碌脛脠篓脰碌
+	 int length;//戮颅鹿媒陆脷碌茫碌脛赂枚脢媒
+	  public Object clone(){//脰脴脨麓clone路陆路篓拢卢脢碌脧脰脡卯驴陆卤麓拢卢脮芒脌茂脰梅脪陋脢脟脰赂arraylist碌脛脟鲁驴陆卤麓脦脢脤芒
 		 point p=null;
 		 try {
 			p=(point)super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		 //p.arraylist=(ArrayList)arraylist.clone();浅拷贝
+		 //p.arraylist=(ArrayList)arraylist.clone();脟鲁驴陆卤麓
 		 p.index=this.index;
 		 p.arraylist=new ArrayList<Integer>();
 		 p.arraylist.addAll(this.arraylist);
@@ -30,52 +31,52 @@ class point implements Cloneable{//继承克隆接口
 	 }
 }
 public class ant{
-   /*先告诉有多少个点n（默认点的坐标是1~n,起点是1终点是n),多少条路径m
-    *再告诉m条路径的起点,终点,路径值(起点和终点都是1~n)
-    *再输入一个数k1,代表一定要到达的顶点
-    *接下去k1个数,代表k1个必须要到达的顶点
-    *再输入一个数k2,代表边数
-    *接下去k2行，每一行代表k2个起点,终点和权值
-    *再输入k3行,代表一定不能去的k3个路径
-    *接下去k3行，每一行代表k3个起点,终点和权值
-    *样例输入:
+   /*脧脠赂忙脣脽脫脨露脿脡脵赂枚碌茫n拢篓脛卢脠脧碌茫碌脛脳酶卤锚脢脟1~n,脝冒碌茫脢脟1脰脮碌茫脢脟n),露脿脡脵脤玫脗路戮露m
+    *脭脵赂忙脣脽m脤玫脗路戮露碌脛脝冒碌茫,脰脮碌茫,脗路戮露脰碌(脝冒碌茫潞脥脰脮碌茫露录脢脟1~n)
+    *脭脵脢盲脠毛脪禄赂枚脢媒k1,麓煤卤铆脪禄露篓脪陋碌陆麓茂碌脛露楼碌茫
+    *陆脫脧脗脠楼k1赂枚脢媒,麓煤卤铆k1赂枚卤脴脨毛脪陋碌陆麓茂碌脛露楼碌茫
+    *脭脵脢盲脠毛脪禄赂枚脢媒k2,麓煤卤铆卤脽脢媒
+    *陆脫脧脗脠楼k2脨脨拢卢脙驴脪禄脨脨麓煤卤铆k2赂枚脝冒碌茫,脰脮碌茫潞脥脠篓脰碌
+    *脭脵脢盲脠毛k3脨脨,麓煤卤铆脪禄露篓虏禄脛脺脠楼碌脛k3赂枚脗路戮露
+    *陆脫脧脗脠楼k3脨脨拢卢脙驴脪禄脨脨麓煤卤铆k3赂枚脝冒碌茫,脰脮碌茫潞脥脠篓脰碌
+    *脩霉脌媒脢盲脠毛:
     *17 
     */
-   private int n;//图的点数
-   private int m;//图的边数
-   private int s[][];//用来存储距离矩阵
-   private int k1;//用来记录必须到达的顶点信息
-   private int k2;//用来记录必须到达的边数
-   private int k3;//用来记录下一定不能去的边数
-   private int mustreach_point[];//必须要达到的顶点数组
-   private int mustreach_edge[][];//必须要到达的边数组
-   private int cannotreach_edge[][];//必须不能到达的边数组
-   public ant(){//用来进行数据的初始化,同时记录数据的
+   private int n;//脥录碌脛碌茫脢媒
+   private int m;//脥录碌脛卤脽脢媒
+   private int s[][];//脫脙脌麓麓忙麓垄戮脿脌毛戮脴脮贸
+   private int k1;//脫脙脌麓录脟脗录卤脴脨毛碌陆麓茂碌脛露楼碌茫脨脜脧垄
+   private int k2;//脫脙脌麓录脟脗录卤脴脨毛碌陆麓茂碌脛卤脽脢媒
+   private int k3;//脫脙脌麓录脟脗录脧脗脪禄露篓虏禄脛脺脠楼碌脛卤脽脢媒
+   private int mustreach_point[];//卤脴脨毛脪陋麓茂碌陆碌脛露楼碌茫脢媒脳茅
+   private int mustreach_edge[][];//卤脴脨毛脪陋碌陆麓茂碌脛卤脽脢媒脳茅
+   private int cannotreach_edge[][];//卤脴脨毛虏禄脛脺碌陆麓茂碌脛卤脽脢媒脳茅
+   public ant(){//脫脙脌麓陆酶脨脨脢媒戮脻碌脛鲁玫脢录禄炉,脥卢脢卤录脟脗录脢媒戮脻碌脛
 	   Scanner cin=new Scanner(System.in);
 	   n=cin.nextInt();
 	   m=cin.nextInt();
-	   s=new int [n+1][n+1];//1~n的矩阵
+	   s=new int [n+1][n+1];//1~n碌脛戮脴脮贸
 	   for (int i=1;i<=m;i++){
 		   int a=cin.nextInt();
 		   int b=cin.nextInt();
 		   int c=cin.nextInt();
-		   if ((s[a][b]==0)||(s[a][b]>c)){//考虑两个点之间存在多条路径
+		   if ((s[a][b]==0)||(s[a][b]>c)){//驴录脗脟脕陆赂枚碌茫脰庐录盲麓忙脭脷露脿脤玫脗路戮露
 		   s[a][b]=c;
 		   s[b][a]=c;
 		   }
 		 }
-	   k1=cin.nextInt();//读入一定要到达的顶点
+	   k1=cin.nextInt();//露脕脠毛脪禄露篓脪陋碌陆麓茂碌脛露楼碌茫
 	   mustreach_point=new int[k1+1];
 	   for (int i=1;i<=k1;i++){
 		 mustreach_point[i]=cin.nextInt();
 	   }
-	   k2=cin.nextInt();//读入一定要到达的边
-	   mustreach_edge=new int[k2+1][2];//一个低矮表起点，另一个终点
+	   k2=cin.nextInt();//露脕脠毛脪禄露篓脪陋碌陆麓茂碌脛卤脽
+	   mustreach_edge=new int[k2+1][2];//脪禄赂枚碌脥掳芦卤铆脝冒碌茫拢卢脕铆脪禄赂枚脰脮碌茫
 	   for (int i=1;i<=k2;i++){
 	   mustreach_edge[i][0]=cin.nextInt();
 	   mustreach_edge[i][1]=cin.nextInt();
 	   }
-	   k3=cin.nextInt();//读入一定不能去的边数
+	   k3=cin.nextInt();//露脕脠毛脪禄露篓虏禄脛脺脠楼碌脛卤脽脢媒
 	   cannotreach_edge=new int[k3+1][2];
 	   for (int i=1;i<=k3;i++){
 		  cannotreach_edge[i][0]=cin.nextInt();
@@ -85,7 +86,7 @@ public class ant{
 		 }
 	   cin.close();
  } 
-    public void BFS(){//通过跑BFS来获得最终结果 
+    public void BFS(){//脥篓鹿媒脜脺BFS脌麓禄帽碌脙脳卯脰脮陆谩鹿没 
     ArrayDeque<point>arraydeque=new ArrayDeque<point>();
     point p=new point();
     p.index=1;
@@ -93,10 +94,10 @@ public class ant{
     p.arraylist.add(1);
     p.value=0;
     p.length=1;
-    int min=0xFFFFFF;//最小权值
+    int min=0xFFFFFF;//脳卯脨隆脠篓脰碌
     //System.out.println(min);
-    ArrayList<Integer>ans=new ArrayList<Integer>();//最小路径值
-    arraydeque.offer(p);//把起点压入队列中
+    ArrayList<Integer>ans=new ArrayList<Integer>();//脳卯脨隆脗路戮露脰碌
+    arraydeque.offer(p);//掳脩脝冒碌茫脩鹿脠毛露脫脕脨脰脨
     /*for (int i=1;i<=n;i++)
     {	for (int j=1;j<=n;j++)
     		System.out.print(s[i][j]);
@@ -104,17 +105,17 @@ public class ant{
     }
     */
     while(!arraydeque.isEmpty()){
-    	point temp=arraydeque.poll();//获得顶部元素
-    	//System.out.println("顶部元素"+temp.index);
+    	point temp=arraydeque.poll();//禄帽碌脙露楼虏驴脭陋脣脴
+    	//System.out.println("露楼虏驴脭陋脣脴"+temp.index);
          if (temp.length==10)
     		continue;
-         if (temp.value>min)//剪枝，进行优化数据
+         if (temp.value>min)//录么脰娄拢卢陆酶脨脨脫脜禄炉脢媒戮脻
         	 continue;
     	if (temp.index==n){//System.out.println(temp.value+" "+temp.arraylist);
-    	//System.out.println("是否符合"+judge(temp));
-    		if (judge(temp)&&temp.value<min){//如果经过了指定的边和点，并且最大路径小于当前最优解
-    			min=temp.value;//更新最优解得价值
-    			ans=temp.arraylist;//更新路径列表
+    	//System.out.println("脢脟路帽路没潞脧"+judge(temp));
+    		if (judge(temp)&&temp.value<min){//脠莽鹿没戮颅鹿媒脕脣脰赂露篓碌脛卤脽潞脥碌茫拢卢虏垄脟脪脳卯麓贸脗路戮露脨隆脫脷碌卤脟掳脳卯脫脜陆芒
+    			min=temp.value;//赂眉脨脗脳卯脫脜陆芒碌脙录脹脰碌
+    			ans=temp.arraylist;//赂眉脨脗脗路戮露脕脨卤铆
     		}
     		continue;
     	}
@@ -125,26 +126,26 @@ public class ant{
     			ptemp.arraylist.add(i);
     			ptemp.length++;
     			ptemp.value=ptemp.value+s[temp.index][i];
-    			//System.out.println("准备压入队列"+ptemp.index);
-    			//System.out.println("列表"+ptemp.arraylist);
+    			//System.out.println("脳录卤赂脩鹿脠毛露脫脕脨"+ptemp.index);
+    			//System.out.println("脕脨卤铆"+ptemp.arraylist);
     			arraydeque.offer(ptemp);
     		}
     	}
     }
-    if (!ans.isEmpty()){//判断是否有解
-    System.out.println("最小代价为:"+min);
-    System.out.println("路径为:"+ans);
+    if (!ans.isEmpty()){//脜脨露脧脢脟路帽脫脨陆芒
+    System.out.println("脳卯脨隆麓煤录脹脦陋:"+min);
+    System.out.println("脗路戮露脦陋:"+ans);
     }
     else{
     	System.out.println(-1);                        
     }
    }
    public boolean judge(point p){
-	   /*判断这个点是否经过必须经过的某些点和边
+	   /*脜脨露脧脮芒赂枚碌茫脢脟路帽戮颅鹿媒卤脴脨毛戮颅鹿媒碌脛脛鲁脨漏碌茫潞脥卤脽
 	    * 
 	    */
 	  boolean ok=true;
-	  for (int i=1;i<=k1;i++){//判断是否经过指定点
+	  for (int i=1;i<=k1;i++){//脜脨露脧脢脟路帽戮颅鹿媒脰赂露篓碌茫
 		  if (!(p.arraylist.contains(mustreach_point[i]))){
 			  ok=false;
 			  break;
@@ -154,7 +155,7 @@ public class ant{
 		  return false;
 	  int tempfirst=-1;
 	  int tempsecond=-1;
-	  for (int i=1;i<=k2;i++){//判断是否经过指定边
+	  for (int i=1;i<=k2;i++){//脜脨露脧脢脟路帽戮颅鹿媒脰赂露篓卤脽
 		  if ((tempfirst=p.arraylist.indexOf(mustreach_edge[i][0]))==-1||(tempsecond=p.arraylist.indexOf(mustreach_edge[i][1]))==-1){
 			  ok=false;
 		  }else{
