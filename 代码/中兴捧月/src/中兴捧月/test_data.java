@@ -1,14 +1,12 @@
 package 中兴捧月;
 
-
-
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 class point2{
+	//x
 	int x;
 	int y;
 	point2(int x,int y){
@@ -28,7 +26,7 @@ class point2{
 	}
 }
 public class test_data {
-  /*生成测试数据
+  /*生成大量的测试数据
    * 
    */
 	private int n;
