@@ -1,16 +1,12 @@
-package ÖÐÐËÅõÔÂ;
+﻿package ÖÐÐËÅõÔÂ;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Scanner;
-/*
- * ×ÜÌåË¼Â·:ÏÈÅÜBFS£¬¼ÇÂ¼µ±Ç°¾­¹ýµÄ½ÚµãÐÅÏ¢£¬Í¬Ê±¼ÇÂ¼µ±Ç°½ÚµãµÄÈ¨Öµ,Èç¹ûµ±Ç°½Úµã¶àÓà9¸öÔòÖ±½Ó·µ»Ø
- * µ±±éÀúµ½ÖÕµãÊ±£¬ÅÐ¶Ï»á²»»á¾­¹ý±ØÐëµ½´ïµÄÁ½¸öµãºÍ±ß£¬²»ÄÜ¾­¹ýµÄ±ßÔÚ¶ÁÈëµÄÊ±ºòÌø¹ý
- * ¼ÇÂ¼ÏÂ×îÓÅµÄÂ·¾¶ÖµºÍÂ·¾¶Â·Ïß
- */
+
+
 class point implements Cloneable{//¼Ì³Ð¿ËÂ¡½Ó¿Ú
-	 //注释
-	 int  index;//Ö®Ç°µÄÂ·¾¶ÉÏµÄ×îºóÒ»¸öµãµÄÏÂ±ê
+         int  index;//Ö®Ç°µÄÂ·¾¶ÉÏµÄ×îºóÒ»¸öµãµÄÏÂ±ê
 	 ArrayList<Integer>arraylist;
 	 int value;//¾­¹ý¶¥µãµÄÈ¨Öµ
 	 int length;//¾­¹ý½ÚµãµÄ¸öÊý
